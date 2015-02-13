@@ -171,10 +171,6 @@ class MonomeFtdi : public USBDeviceConfig, public UsbConfigXtracter
 
   void setPollPeriod(uint32_t period) { pollPeriod = period; }
 
-  //... FIXME: holdovers from non-blocking FTDI driver on aleph
-  bool tx_busy(void) { return 0; }
-  bool rx_busy(void) { return 0; }
-
   // getters for rx count / data
   uint32_t rx_bytes(void) { return rxBytes > 1 ? rxBytes - 2 : 0; }
   uint8_t* rx_buf(void) { return rxBuf + 2; }
