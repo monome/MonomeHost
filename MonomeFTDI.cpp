@@ -364,10 +364,6 @@ uint32_t MonomeFtdi::Init(uint32_t parent, uint32_t port, uint32_t lowspeed)
 
   PRINT_DBG("\r\n \r\n Monome FTDI configured.");
 
-  /////// ????
-  //  delay(100);
-  ////////////////
-
   bPollEnable = true;
   return 0;
 }

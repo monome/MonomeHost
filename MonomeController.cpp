@@ -197,48 +197,36 @@ void MonomeController::refresh(uint8_t* buf)
 // check dirty flags and refresh leds
 void MonomeController::grid_refresh(uint8_t* buf)
 {
-  // may need to wait after each quad until tx transfer is complete
-  uint8_t busy = ftdi_.tx_busy();
-
   // check quad 0
   if( frame_dirty_ & 0b0001 ) {
     //      PRINT_DBG("\r\n grid_refresh() ; quad 0");
-    while( busy ) { busy = ftdi_.tx_busy(); }
     (this->*grid_map_)(0, 0, buf);
     frame_dirty_ &= 0b1110;
-    busy = 1;
   }
   // check quad 1
   if( frame_dirty_ & 0b0010 ) {
     //      PRINT_DBG("\r\n grid_refresh() ; quad 1");
     if ( desc_.cols > 7 ) {
-      while( busy ) { busy = ftdi_.tx_busy(); }
       (this->*grid_map_)(8, 0, buf + 8);
       frame_dirty_ &= 0b1101;
-      busy = 1;
     }
   }
   // check quad 2
   if( frame_dirty_ & 0b0100 ) { 
     //      PRINT_DBG("\r\n grid_refresh() ; quad 2");
     if( desc_.rows > 7 ) {
-      while( busy ) { busy = ftdi_.tx_busy(); }
       (this->*grid_map_)(0, 8, buf + 128);
       frame_dirty_ &= 0b1011;
-      busy = 1;
     }
   }
   // check quad 3
   if( frame_dirty_ & 0b1000 ) {
     //      PRINT_DBG("\r\n grid_refresh() ; quad 3");
     if( (desc_.rows > 7) && (desc_.cols > 7) )  {
-      while( busy ) { busy = ftdi_.tx_busy(); }
       (this->*grid_map_)(8, 8, buf + 136);
       frame_dirty_ &= 0b0111;
-      busy = 1;
     }
   }
-  while( busy ) { busy = ftdi_.tx_busy(); }
 }
 
 
@@ -246,20 +234,14 @@ void MonomeController::grid_refresh(uint8_t* buf)
 void MonomeController::arc_refresh(uint8_t* buf)
 {
   // may need to wait after each quad until tx transfer is complete
-  uint8_t busy = ftdi_.tx_busy();
   uint8_t i;
 
   for(i=0; i<desc_.encs; i++) {
     if(frame_dirty_ & (1<<i)) {
-      while(busy) { busy = ftdi_.tx_busy(); }
       (this->*ring_map_)(i, buf + (i<<6));
       frame_dirty_ &= ~(1<<i);
-      busy = 1;
     }
   }
-
-  //?
-  while( busy ) { busy = ftdi_.tx_busy(); }
 }
 
 
@@ -365,7 +347,6 @@ uint8_t MonomeController::setup_mext(void)
 {
   uint8_t* prx;
   uint8_t w = 0;
-  uint8_t busy;
   uint8_t rx_bytes;
 
   PRINT_DBG("\r\n setup mext");
@@ -384,11 +365,6 @@ uint8_t MonomeController::setup_mext(void)
     ftdi_.read();
 
     delay(1);
-    busy = 1;
-
-    while(busy) {
-      busy = ftdi_.rx_busy();
-    }
     rx_bytes = ftdi_.rx_bytes();
   }
   
@@ -432,10 +408,7 @@ uint8_t MonomeController::setup_mext(void)
   delay(1);
   ftdi_.read();
   delay(1);
-  busy = 1;
-  while(busy) {
-    busy = ftdi_.rx_busy();
-  }
+
   rx_bytes = ftdi_.rx_bytes();
   prx = ftdi_.rx_buf();
   if(*(prx+2) == 'k')
