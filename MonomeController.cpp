@@ -280,8 +280,6 @@ void MonomeController::calc_quadrant_flag(uint8_t x, uint8_t y) {
       frame_dirty_ |= 0b0001;
     }
   } 
-  /* print_dbg("\r\n MonomeController::calc_quadrant_flag: 0x"); */
-  /* print_dbg_hex(frame_dirty_); */
 }
 
 // set given quadrant dirty flag
@@ -319,15 +317,6 @@ void MonomeController::arc_led_set(uint8_t enc, uint8_t ring, uint8_t val) {
   led_buf_[ring + (enc << 6)] = val;
   frame_dirty_ |= (1 << enc);
 }
-
-// uint8_t MonomeController::size_x(void) { return desc_.cols; }
-// uint8_t MonomeController::size_y(void) {  return desc_.rows; }
-// uint8_t MonomeController::is_vari(void) {  return desc_.vari; }
-
-///??
-//  eDevice MonomeController::dev_type(void) { return desc_.device; }
-
-
 
   
 /////////////////////////
@@ -489,22 +478,12 @@ void MonomeController::parse_serial_40h(void)
 
 void MonomeController::parse_serial_series(void)
 {
-  //    uint8_t* prx = ftdi_.rx_buf();
-  // huh...
-  //  uint8_t* prx = ftdi_.rx_buf() + 2;
-  // do the offset in the driver
   uint8_t* prx = ftdi_.rx_buf();
-  uint8_t i;
-  uint8_t rx_bytes;
   uint8_t x, y, z;
-
-  // hmm...
-  //  rx_bytes = ftdi_.rx_bytes() - 2;
-  // do the offset in the driver
-  rx_bytes = ftdi_.rx_bytes();
-
-  i = 0;
-
+  // FTDI reports 2 status bytes each read.
+  // driver class is responsible for stripping these
+  uint8_t rx_bytes = ftdi_.rx_bytes();
+  uint8_t i = 0;
 
   while(i < rx_bytes) {
     // process consecutive pairs of bytes
@@ -624,8 +603,6 @@ void MonomeController::grid_map_40h(uint8_t x, uint8_t y, uint8_t* data)
 
 void MonomeController::grid_map_series(uint8_t x, uint8_t y, uint8_t* data)
 {
-  // static uint8_t * ptx;
-  // static uint8_t i, j;
   uint8_t * ptx;
   uint8_t i, j;
 
@@ -656,8 +633,6 @@ void MonomeController::grid_map_series(uint8_t x, uint8_t y, uint8_t* data)
 
 void MonomeController::ring_map_mext(uint8_t n, uint8_t* data)
 {
-  // static uint8_t* ptx;
-  // static uint8_t i;
   uint8_t* ptx;
   uint8_t i;
 

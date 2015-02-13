@@ -45,14 +45,14 @@
 #include "Arduino.h"
 #include "confdescparser.h"
 
-/// defines (FIXME?)
+//--- defines
+// FIXME: many of these could be const class variables
 
 ////////////
 /// dbg
 //#define PRINT_DBG(x) Serial.print((x))
 #define PRINT_DBG(x)
 ///////////
-
 
 
 #define bmREQ_FTDI_OUT  0x40
@@ -84,8 +84,6 @@
 
 // map stores binary data for each led in 8x8
 #define MONOME_GRID_MAP_BYTES 8
-// level map stores 8b level data for each led in 8x8
-//#define MONOME_GRID_LEVEL_MAP_BYTES 64
 
 // a frame is one knob, max is arc4
 #define MONOME_RING_MAX_FRAMES 4
@@ -112,7 +110,9 @@ class MonomeReportParser
  public:
   virtual uint8_t CheckDeviceDesc(char* man, char* prod, char* ser) = 0;
   //  virtual void Parse(MonomeFtdi* ftdi, uint32_t len, uint8_t *buf) = 0;
-  //// FIXME: bad form here
+  //// FIXME: bad form here. 
+  //// parser is assumed to have access to a driver instance.
+  //// would be better to pass the instance/data as indicated above.
   virtual void Parse(void) = 0;
 };
   
@@ -149,7 +149,6 @@ class MonomeFtdi : public USBDeviceConfig, public UsbConfigXtracter
   bool	bNeedsId;
 
   // pointer to controller
-  //  Controller* pController;
   MonomeReportParser* pController;
   // receive buffer
   uint8_t rxBuf[MONOME_RX_BUF_LEN];
@@ -161,8 +160,9 @@ class MonomeFtdi : public USBDeviceConfig, public UsbConfigXtracter
 
   // Basic IO 
   //  uint32_t read(uint32_t *nreadbytes, uint8_t *dataptr);
-  // overload for  internal buf
+  // always use internal RX butter
   uint32_t read(void);
+  // always use external TX buffer
   uint32_t write(uint32_t datalen, uint8_t *dataptr);
 
   // Line control setup 

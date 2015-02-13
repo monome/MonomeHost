@@ -85,10 +85,10 @@ class MonomeController : public MonomeReportParser {
   void init(void);
 
   // parse serial data
-  //  void Parse() { 
   //  void Parse(MonomeFtdi* ftdi, uint32_t len, uint8_t *buf) {
   void Parse(void) {
-    /// FIXME? this is pretty bad form
+    /// FIXME
+    /// as noted in MonomeFTDI.h, this is pretty bad form
     (this->*parse_serial_)();
   }
 
@@ -111,14 +111,6 @@ class MonomeController : public MonomeReportParser {
   void led_set(uint8_t x, uint8_t y, uint8_t val) {
     if(desc_.device == eDeviceArc) {
       arc_led_set(x, y, val);
-    } else {
-      grid_led_set(x, y, val);
-    }
-  }
-
-  void led_(uint8_t x, uint8_t y, uint8_t val) {
-    if(desc_.device == eDeviceArc) {
-      ;;      //      arc_led_set(x, y, val);
     } else {
       grid_led_set(x, y, val);
     }
@@ -223,10 +215,6 @@ class MonomeController : public MonomeReportParser {
   // each led gets a full byte
   uint8_t led_buf_[MONOME_LED_BUF_BYTES];
 
-  // local rx byte count
-  //  uint32_t rx_bytes_;
-  // local rx buffer
-  //  uint8_t rx_buf_[MONOME_RX_BUF_LEN];
   // local tx buffer
   uint8_t  tx_buf_[MONOME_TX_BUF_LEN];
 
