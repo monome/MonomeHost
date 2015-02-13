@@ -471,13 +471,10 @@ uint32_t MonomeFtdi::Poll() {
 
 	pController->Parse();
 	// need extra 1ms delay after each read...
-	delay(1);
 	qNextPollTime = millis() + pollPeriod;	
-      } else {
-	// need extra 1ms delay after each read...
-	delay(1);
       }
-      
+      // need extra 1ms delay after each read...
+      delay(1);
     }
 
   return rcode;
