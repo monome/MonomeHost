@@ -116,8 +116,14 @@ class MonomeController : public MonomeReportParser {
     }
   }
 
+  void led_clear() {
+    grid_led_clear();
+  }
+
   // grid led/set function
   void grid_led_set(uint8_t x, uint8_t y, uint8_t val);
+  // grid led/clear function
+  void grid_led_clear();
   // grid led/toggle function
   void grid_led_toggle(uint8_t x, uint8_t y);
   // arc led/set function

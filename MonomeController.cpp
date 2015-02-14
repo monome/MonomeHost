@@ -287,6 +287,14 @@ void MonomeController::grid_led_set(uint8_t x, uint8_t y, uint8_t z) {
   MonomeController::calc_quadrant_flag(x, y);
 }
 
+
+// grid led/clear function
+void MonomeController::grid_led_clear() {
+  for(int i = 0;i<256;i++)
+    led_buf_[i] = 0;
+  frame_dirty_ = 0xf;
+}
+
 // grid led/toggle function
 void MonomeController::grid_led_toggle(uint8_t x, uint8_t y) {
   led_buf_[xy_idx(x,y)] ^= 0xff;

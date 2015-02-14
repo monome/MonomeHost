@@ -13,7 +13,8 @@ void GridKeyCallback(byte x, byte y, byte z) {
   Serial.print(z);
   Serial.print("\r\n");
   
-  monome.led_set(x, y, z > 0 ? 15 : 0 );
+  monome.led_clear();
+  monome.led_set(x, y, 15);
   monome.refresh();
 }
 
@@ -35,7 +36,7 @@ void setup() {
   // set key event callback
   monome.SetGridKeyCallback(&GridKeyCallback);
 
-  Serial.begin(19200);
+  Serial.begin(115200);
   Serial.print("\n\nStarting...\n");
   delay(200);
 }
